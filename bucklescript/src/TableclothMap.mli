@@ -113,6 +113,11 @@ val from_list :
   -> ('key * 'value) list
   -> ('key, 'value, 'identity) t
 
+val fromListUnique :
+     ('key, 'identity) TableclothComparator.s
+  -> ('key * 'value) list
+  -> (('key, 'value, 'identity) t, 'key) Result.t
+
 (** {1 Basic operations} *)
 
 val add :

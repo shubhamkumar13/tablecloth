@@ -14,11 +14,29 @@ let fromArray
 
 let from_array = fromArray
 
+let fromArrayUnique
+    (comparator : ('key, 'id) TableclothComparator.s)
+    (values : ('key * 'v) array) : (('key, 'value, 'id), 'key) Result.t =
+  let f arr = Array.fold_left (fun acc x -> 
+    ((Array.fold_left (fun acc i -> 
+      match (Stdlib.compare (fst i) (fst x)) with 
+      | 0 -> acc + 1 
+      | _ -> acc) 0 arr), acc, x) |> fun (sum,acc,x) -> 
+        if sum = 1 then 
+          (Result.ok x) :: acc 
+        else 
+          (Result.error (fst x)) :: acc) [] arr |> Array.of_list
+  in
+  f values |> fun values -> Belt.Map.fromArray values ~id:(Internal.toBeltComparator comparator)
+let from_array = fromArray
+
 let empty comparator = fromArray comparator [||]
 
 let fromList comparator l = fromArray comparator (Array.of_list l)
 
 let from_list = fromList
+
+let fromListUnique comparator l = fromArrayUnique comparator (Array.of_list l)
 
 let singleton comparator ~key ~value = fromArray comparator [| (key, value) |]
 
