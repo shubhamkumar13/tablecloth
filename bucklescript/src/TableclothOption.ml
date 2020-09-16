@@ -20,6 +20,10 @@ let and_ ta tb = match isSome ta with true -> tb | false -> ta
 
 let andThen t ~f = match t with None -> None | Some x -> f x
 
+let andThen2 a b ~f = match (a, b) with 
+    | Some a, Some b -> f a b  
+    | _ -> None
+
 let and_then = andThen
 
 let flatten = function Some option -> option | None -> None
